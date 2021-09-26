@@ -91,6 +91,7 @@ Model modelBuzzRightHand;
 Model modelBuzzRightForearm;
 Model modelBuzzTorso;
 Model modelBuzzHead;
+Model modelBuzzHip;
 
 //Model Phone
 Model modelMinionVolando;
@@ -341,6 +342,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelBuzzTorso.setShader(&shaderMulLighting);
 	modelBuzzHead.loadModel("../models/buzz/buzzlightyHead.obj");
 	modelBuzzHead.setShader(&shaderMulLighting);
+	modelBuzzHip.loadModel("../models/buzz/buzzlightyHip.obj");
+	modelBuzzHip.setShader(&shaderMulLighting);
 
 	//MinionVolando
 	modelMinionVolando.loadModel("../models/Minion_volando/minion.obj");
@@ -481,8 +484,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureHighway.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureHighway.convertToData(bitmap, imageWidth,
-			imageHeight);
+	data = textureHighway.convertToData(bitmap, imageWidth, imageHeight);
 	// Creando la textura con id 1
 	glGenTextures(1, &textureHighwayID);
 	// Enlazar esa textura a una tipo de textura de 2D.
@@ -590,6 +592,7 @@ void destroy() {
 	modelBuzzRightForearm.destroy();
 	modelBuzzTorso.destroy();
 	modelBuzzHead.destroy();
+	modelBuzzHip.destroy();
 	modelMinion.destroy();
 	modelMinionVolando.destroy();
 
@@ -1145,6 +1148,9 @@ void applicationLoop() {
 		glm::mat4 modelMatrixBuzzHead = glm::mat4(modelMatrixBuzzBody);
 		modelMatrixBuzzHead = glm::rotate(modelMatrixBuzzHead, rotBuzzHead, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelBuzzHead.render(modelMatrixBuzzHead);
+		glm::mat4 modelMatrixBuzzHip = glm::mat4(modelMatrixBuzzBody);
+		modelBuzzHip.render(modelMatrixBuzzHip);
+
 
 		//MinionVolando
 		glm::mat4 modelMatrixMinionVolandoPhone = glm::mat4(modelMatrixMinionVolando);
