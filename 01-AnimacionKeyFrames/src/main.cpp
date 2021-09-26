@@ -93,7 +93,7 @@ Model modelBuzzHead;
 Model modelMinionVolando;
 
 //Model Amoung Us
-Model modelMinon;
+Model modelMinion;
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -336,9 +336,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelMinionVolando.loadModel("../models/Minion_volando/minion.obj");
 	modelMinionVolando.setShader(&shaderMulLighting);
 
-	//Among Us
-	modelMinon.loadModel("../models/Minion_pelota/minion1.obj");
-	modelMinon.setShader(&shaderMulLighting);
+	//Minion
+	modelMinion.loadModel("../models/Minion_pelota/minion1.obj");
+	modelMinion.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -578,7 +578,7 @@ void destroy() {
 	modelBuzzLeftForearm.destroy();
 	modelBuzzTorso.destroy();
 	modelBuzzHead.destroy();
-	modelMinon.destroy();
+	modelMinion.destroy();
 	modelMinionVolando.destroy();
 
 	// Textures Delete
@@ -1126,7 +1126,7 @@ void applicationLoop() {
 		//Minion
 		glm::mat4 modelMatrixMinionBody = glm::mat4(modelMatrixMinion);
 		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.05f, 0.05f, 0.05f));
-		modelMinon.render(modelMatrixMinionBody);
+		modelMinion.render(modelMatrixMinionBody);
 
 		/*******************************************
 		 * Skybox
