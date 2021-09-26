@@ -89,6 +89,12 @@ Model modelBuzzLeftForearm;
 Model modelBuzzTorso;
 Model modelBuzzHead;
 
+//Model Phone
+Model modelMinionVolando;
+
+//Model Amoung Us
+Model modelMinon;
+
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
 
@@ -119,6 +125,8 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixBuzz = glm::mat4(1.0f);
+glm::mat4 modelMatrixMinionVolando = glm::mat4(1.0f);
+glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftHand = 0.0, BuzzLeftForearm = 0.0;
@@ -312,6 +320,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.loadModel("../models/LegoDart/LeoDart_right_leg.obj");
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
+	//Buzz
 	modelBuzzLeftArm.loadModel("../models/buzz/buzzlightyLeftArm.obj");
 	modelBuzzLeftArm.setShader(&shaderMulLighting);
 	modelBuzzLeftHand.loadModel("../models/buzz/buzzlightyLeftHand.obj");
@@ -322,6 +331,14 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelBuzzTorso.setShader(&shaderMulLighting);
 	modelBuzzHead.loadModel("../models/buzz/buzzlightyHead.obj");
 	modelBuzzHead.setShader(&shaderMulLighting);
+
+	//MinionVolando
+	modelMinionVolando.loadModel("../models/Minion_volando/minion.obj");
+	modelMinionVolando.setShader(&shaderMulLighting);
+
+	//Among Us
+	modelMinon.loadModel("../models/Minion_pelota/minion1.obj");
+	modelMinon.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -561,6 +578,8 @@ void destroy() {
 	modelBuzzLeftForearm.destroy();
 	modelBuzzTorso.destroy();
 	modelBuzzHead.destroy();
+	modelMinon.destroy();
+	modelMinionVolando.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -782,6 +801,10 @@ void applicationLoop() {
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0f, 0.0f, 20.0f));
 	
 	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(3.0f, 0.0f, -5.0f));
+	
+	modelMatrixMinionVolando = glm::translate(modelMatrixMinionVolando, glm::vec3(8.0f, 5.0f, 5.0f));
+
+	modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(-3.0f, 0.0f, -10.0f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1095,6 +1118,16 @@ void applicationLoop() {
 		modelMatrixBuzzHead = glm::rotate(modelMatrixBuzzHead, rotBuzzHead, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelBuzzHead.render(modelMatrixBuzzHead);
 
+		//MinionVolando
+		glm::mat4 modelMatrixMinionVolandoPhone = glm::mat4(modelMatrixMinionVolando);
+		modelMatrixMinionVolandoPhone = glm::scale(modelMatrixMinionVolandoPhone, glm::vec3(0.05f, 0.05f, 0.05f));
+		modelMinionVolando.render(modelMatrixMinionVolandoPhone);
+
+		//Minion
+		glm::mat4 modelMatrixMinionBody = glm::mat4(modelMatrixMinion);
+		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.05f, 0.05f, 0.05f));
+		modelMinon.render(modelMatrixMinionBody);
+
 		/*******************************************
 		 * Skybox
 		 *******************************************/
@@ -1281,7 +1314,7 @@ void applicationLoop() {
 }
 
 int main(int argc, char **argv) {
-	init(800, 700, "Window GLFW", false);
+	init(800, 700, "Primera Práctica", false);
 	applicationLoop();
 	destroy();
 	return 1;
