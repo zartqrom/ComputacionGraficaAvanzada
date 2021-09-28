@@ -92,6 +92,9 @@ Model modelBuzzRightForearm;
 Model modelBuzzTorso;
 Model modelBuzzHead;
 Model modelBuzzHip;
+Model modelBuzzRightThigh;
+Model modelBuzzRightCalf;
+Model modelBuzzRightFoot;
 
 //Model Phone
 Model modelMinionVolando;
@@ -133,7 +136,7 @@ glm::mat4 modelMatrixMinionVolando = glm::mat4(1.0f);
 glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
-float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftHand = 0.0, BuzzLeftForearm = 0.0, rotBuzzRightArm = 0.0, rotBuzzRightHand = 0.0, BuzzRightForearm = 0.0;
+float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftHand = 0.0, rotBuzzLeftForearm = 0.0, rotBuzzRightArm = 0.0, rotBuzzRightHand = 0.0, rotBuzzRightForearm = 0.0, rotBuzzRightLeg = 0.0;
 int modelSelected = 0;
 bool enableCountSelected = true;
 
@@ -324,7 +327,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.loadModel("../models/LegoDart/LeoDart_right_leg.obj");
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
-	//Buzz
+	//Carga Model Buzz
 	modelBuzzLeftArm.loadModel("../models/buzz/buzzlightyLeftArm.obj");
 	modelBuzzLeftArm.setShader(&shaderMulLighting);
 	modelBuzzLeftHand.loadModel("../models/buzz/buzzlightyLeftHand.obj");
@@ -344,6 +347,12 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelBuzzHead.setShader(&shaderMulLighting);
 	modelBuzzHip.loadModel("../models/buzz/buzzlightyHip.obj");
 	modelBuzzHip.setShader(&shaderMulLighting);
+	modelBuzzRightThigh.loadModel("../models/buzz/buzzlightyRightThigh.obj");
+	modelBuzzRightThigh.setShader(&shaderMulLighting);
+	modelBuzzRightCalf.loadModel("../models/buzz/buzzlightyRightCalf.obj");
+	modelBuzzRightCalf.setShader(&shaderMulLighting);
+	modelBuzzRightFoot.loadModel("../models/buzz/buzzlightyRightFoot.obj");
+	modelBuzzRightFoot.setShader(&shaderMulLighting);
 
 	//MinionVolando
 	modelMinionVolando.loadModel("../models/Minion_volando/minion.obj");
@@ -593,6 +602,9 @@ void destroy() {
 	modelBuzzTorso.destroy();
 	modelBuzzHead.destroy();
 	modelBuzzHip.destroy();
+	modelBuzzRightThigh.destroy();
+	modelBuzzRightCalf.destroy();
+	modelBuzzRightFoot.destroy();
 	modelMinion.destroy();
 	modelMinionVolando.destroy();
 
@@ -767,24 +779,34 @@ bool processInput(bool continueApplication) {
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, -0.0));
 	
 	//Movimientos del Buzz
+	//Cabeza
 	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&
 			glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		rotBuzzHead += 0.02;
 	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
 			glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		rotBuzzHead -= 0.02;
+	//Brazo Izquierdo
 	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&
 			glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		rotBuzzLeftArm += 0.02;
 	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
 			glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		rotBuzzLeftArm -= 0.02;
+	//Brazo Derecho
 	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&
 			glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
 		rotBuzzRightArm += 0.02;
 	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
 			glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-		rotBuzzRightArm -= 0.02;	
+		rotBuzzRightArm -= 0.02;
+	//Pierna Derecha
+	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&
+			glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
+		rotBuzzRightLeg += 0.02;
+	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
+			glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
+		rotBuzzRightLeg -= 0.02;		
 	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		modelMatrixBuzz = glm::rotate(modelMatrixBuzz, 0.02f, glm::vec3(0, 1, 0));
 	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
@@ -1121,10 +1143,13 @@ void applicationLoop() {
 		// Se regresa el cull faces IMPORTANTE para la capa
 		glEnable(GL_CULL_FACE);
 
-		//Buzz
+		/*************
+		 * Buzz render
+		 *************/
 		glm::mat4 modelMatrixBuzzBody = glm::mat4(modelMatrixBuzz);
 		modelMatrixBuzzBody = glm::scale(modelMatrixBuzzBody, glm::vec3(2.5f, 2.5f, 2.5f));
 		modelBuzzTorso.render(modelMatrixBuzzBody);
+		//Brazo Izquierdo
 		glm::mat4 modelMatrixBuzzLeftArm = glm::mat4(modelMatrixBuzzBody);
 		modelMatrixBuzzLeftArm = glm::translate(modelMatrixBuzzLeftArm, glm::vec3(0.183784f, 0.577228f, -0.02638f));
 		modelMatrixBuzzLeftArm = glm::rotate(modelMatrixBuzzLeftArm, rotBuzzLeftArm, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -1135,6 +1160,7 @@ void applicationLoop() {
 		modelBuzzLeftForearm.render(modelMatrixBuzzLeftForeArm);
 		glm::mat4 modelMatrixBuzzLeftHand = glm::mat4(modelMatrixBuzzLeftForeArm);
 		modelBuzzLeftHand.render(modelMatrixBuzzLeftHand);
+		//Brazo Derecho
 		glm::mat4 modelMatrixBuzzRightArm = glm::mat4(modelMatrixBuzzBody);
 		modelMatrixBuzzRightArm = glm::translate(modelMatrixBuzzRightArm, glm::vec3(-0.183784f, 0.577228f, -0.02638f));
 		modelMatrixBuzzRightArm = glm::rotate(modelMatrixBuzzRightArm, rotBuzzRightArm, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -1145,12 +1171,24 @@ void applicationLoop() {
 		modelBuzzRightForearm.render(modelMatrixBuzzRightForeArm);
 		glm::mat4 modelMatrixBuzzRightHand = glm::mat4(modelMatrixBuzzRightForeArm);
 		modelBuzzRightHand.render(modelMatrixBuzzRightHand);
+		//Cabeza
 		glm::mat4 modelMatrixBuzzHead = glm::mat4(modelMatrixBuzzBody);
 		modelMatrixBuzzHead = glm::rotate(modelMatrixBuzzHead, rotBuzzHead, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelBuzzHead.render(modelMatrixBuzzHead);
+		//Cadera
 		glm::mat4 modelMatrixBuzzHip = glm::mat4(modelMatrixBuzzBody);
 		modelBuzzHip.render(modelMatrixBuzzHip);
-
+		//Pierna Derecha
+		glm::mat4 modelMatrixBuzzRightThigh = glm::mat4(modelMatrixBuzzHip);
+		modelMatrixBuzzRightThigh = glm::translate(modelMatrixBuzzRightThigh, glm::vec3(-0.06097f, 0.3787f, -0.008725f));
+		modelMatrixBuzzRightThigh = glm::rotate(modelMatrixBuzzRightThigh, rotBuzzRightLeg, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrixBuzzRightThigh = glm::rotate(modelMatrixBuzzRightThigh, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrixBuzzRightThigh = glm::translate(modelMatrixBuzzRightThigh, glm::vec3(0.06097f, -0.3787f, 0.008725f));
+		modelBuzzRightThigh.render(modelMatrixBuzzRightThigh);
+		glm::mat4 modelMatrixBuzzRightCalf = glm::mat4(modelMatrixBuzzRightThigh);
+		modelBuzzRightCalf.render(modelMatrixBuzzRightCalf);
+		glm::mat4 modelMatrixBuzzRightFoot = glm::mat4(modelMatrixBuzzRightCalf);
+		modelBuzzRightFoot.render(modelMatrixBuzzRightFoot);
 
 		//MinionVolando
 		glm::mat4 modelMatrixMinionVolandoPhone = glm::mat4(modelMatrixMinionVolando);
