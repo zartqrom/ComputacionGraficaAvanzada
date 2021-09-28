@@ -859,12 +859,17 @@ void applicationLoop() {
 	modelMatrixEclipse = glm::translate(modelMatrixEclipse, glm::vec3(27.5, 0, 30.0));
 	modelMatrixEclipse = glm::rotate(modelMatrixEclipse, glm::radians(180.0f), glm::vec3(0, 1, 0));
 	int state = 0;
+	int stateLambo = 0;
 	float advanceCount = 0.0;
+	float advanceCountLambo = 0.0;
 	float rotCount = 0.0;
+	float rotCountLambo = 0.0;
 	float rotWheelsX = 0.0;
 	float rotWheelsY = 0.0;
 	int numberAdvance = 0;
+	int numberAdvanceLambo = 0;
 	int maxAdvance = 0.0;
+	int maxAdvanceLambo = 0.0;
 
 	//Posicion de los modelos
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0f, 0.0f, 2.0f));
@@ -1410,7 +1415,7 @@ void applicationLoop() {
 			break;
 		}
 
-		//Maquina de estados de la puerta del lambo
+		//Maquina de estados de la puerta del Lambo
 		switch (stateDoor)
 		{
 		case 0:
@@ -1431,6 +1436,75 @@ void applicationLoop() {
 		default:
 			break;
 		}
+
+		//Maquina de estado del Lambo
+		switch (stateLambo)
+		{
+		case 0:
+			if (numberAdvanceLambo == 0)
+			{
+				maxAdvanceLambo = -1.0f;
+			}
+			else if (numberAdvanceLambo == 1)
+			{
+				maxAdvanceLambo = -4.0f;
+			}
+			else if (numberAdvanceLambo == 2)
+			{
+				maxAdvanceLambo = -4.9f;
+			}
+			else if (numberAdvanceLambo == 3)
+			{
+				maxAdvanceLambo = -4.0f;
+			}
+			else if (numberAdvanceLambo == 4)
+			{
+				maxAdvanceLambo = -4.9f;
+			}
+			stateLambo = 1;
+			break;
+		case 1:
+			modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.1f));
+			advanceCountLambo -= 0.01f;
+			//rotWheelsX += 0.05f;
+			//rotWheelsY -= 0.02f;
+			//if (rotWheelsY < 0)
+			//{
+			//	rotWheelsY = 0;
+			//}
+			if (advanceCountLambo <= maxAdvanceLambo)
+			{
+				advanceCountLambo = 0;
+				numberAdvanceLambo++;
+				stateLambo = 2;
+			}
+			break;
+		case 2:
+			modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.025f));
+			modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+			rotCountLambo += 0.5f;
+			//rotWheelsX += 0.5f;
+			//rotWheelsY += 0.2f;
+			if (rotWheelsY > 0.24)
+			{
+				rotWheelsY = 0.24;
+			}
+			
+			if (rotCountLambo >= 90.0f)
+			{
+				rotCountLambo = 0;
+				stateLambo = 0;
+				if (numberAdvanceLambo > 4)
+				{
+					numberAdvanceLambo = 1;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+		std::cout << "Avance -> " << advanceCountLambo << std::endl;
 
 		glfwSwapBuffers(window);
 	}
