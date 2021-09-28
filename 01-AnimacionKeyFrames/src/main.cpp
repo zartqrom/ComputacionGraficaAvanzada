@@ -95,6 +95,9 @@ Model modelBuzzHip;
 Model modelBuzzRightThigh;
 Model modelBuzzRightCalf;
 Model modelBuzzRightFoot;
+Model modelBuzzLeftThigh;
+Model modelBuzzLeftCalf;
+Model modelBuzzLeftFoot;
 
 //Model Phone
 Model modelMinionVolando;
@@ -136,7 +139,7 @@ glm::mat4 modelMatrixMinionVolando = glm::mat4(1.0f);
 glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
-float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftHand = 0.0, rotBuzzLeftForearm = 0.0, rotBuzzRightArm = 0.0, rotBuzzRightHand = 0.0, rotBuzzRightForearm = 0.0, rotBuzzRightLeg = 0.0;
+float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftHand = 0.0, rotBuzzLeftForearm = 0.0, rotBuzzRightArm = 0.0, rotBuzzRightHand = 0.0, rotBuzzRightForearm = 0.0, rotBuzzRightLeg = 0.0, rotBuzzLeftLeg = 0.0;
 int modelSelected = 0;
 bool enableCountSelected = true;
 
@@ -353,6 +356,12 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelBuzzRightCalf.setShader(&shaderMulLighting);
 	modelBuzzRightFoot.loadModel("../models/buzz/buzzlightyRightFoot.obj");
 	modelBuzzRightFoot.setShader(&shaderMulLighting);
+	modelBuzzLeftThigh.loadModel("../models/buzz/buzzlightyLeftThigh.obj");
+	modelBuzzLeftThigh.setShader(&shaderMulLighting);
+	modelBuzzLeftCalf.loadModel("../models/buzz/buzzlightyLeftCalf.obj");
+	modelBuzzLeftCalf.setShader(&shaderMulLighting);
+	modelBuzzLeftFoot.loadModel("../models/buzz/buzzlightyLeftFoot.obj");
+	modelBuzzLeftFoot.setShader(&shaderMulLighting);
 
 	//MinionVolando
 	modelMinionVolando.loadModel("../models/Minion_volando/minion.obj");
@@ -605,6 +614,9 @@ void destroy() {
 	modelBuzzRightThigh.destroy();
 	modelBuzzRightCalf.destroy();
 	modelBuzzRightFoot.destroy();
+	modelBuzzLeftThigh.destroy();
+	modelBuzzLeftCalf.destroy();
+	modelBuzzLeftFoot.destroy();
 	modelMinion.destroy();
 	modelMinionVolando.destroy();
 
@@ -806,7 +818,14 @@ bool processInput(bool continueApplication) {
 		rotBuzzRightLeg += 0.02;
 	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
 			glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
-		rotBuzzRightLeg -= 0.02;		
+		rotBuzzRightLeg -= 0.02;	
+	//Pierna Izquierda
+	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&
+			glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+		rotBuzzLeftLeg += 0.02;
+	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
+			glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+		rotBuzzLeftLeg -= 0.02;			
 	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		modelMatrixBuzz = glm::rotate(modelMatrixBuzz, 0.02f, glm::vec3(0, 1, 0));
 	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
@@ -1189,6 +1208,17 @@ void applicationLoop() {
 		modelBuzzRightCalf.render(modelMatrixBuzzRightCalf);
 		glm::mat4 modelMatrixBuzzRightFoot = glm::mat4(modelMatrixBuzzRightCalf);
 		modelBuzzRightFoot.render(modelMatrixBuzzRightFoot);
+		//Pierna Izquierda
+		glm::mat4 modelMatrixBuzzLeftThigh = glm::mat4(modelMatrixBuzzHip);
+		modelMatrixBuzzLeftThigh = glm::translate(modelMatrixBuzzLeftThigh, glm::vec3(0.06097f, 0.3787f, -0.008725f));
+		modelMatrixBuzzLeftThigh = glm::rotate(modelMatrixBuzzLeftThigh, rotBuzzLeftLeg, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrixBuzzLeftThigh = glm::rotate(modelMatrixBuzzLeftThigh, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrixBuzzLeftThigh = glm::translate(modelMatrixBuzzLeftThigh, glm::vec3(-0.06097f, -0.3787f, 0.008725f));
+		modelBuzzLeftThigh.render(modelMatrixBuzzLeftThigh);
+		glm::mat4 modelMatrixBuzzLeftCalf = glm::mat4(modelMatrixBuzzLeftThigh);
+		modelBuzzLeftCalf.render(modelMatrixBuzzLeftCalf);
+		glm::mat4 modelMatrixBuzzLeftFoot = glm::mat4(modelMatrixBuzzLeftCalf);
+		modelBuzzLeftFoot.render(modelMatrixBuzzLeftFoot);
 
 		//MinionVolando
 		glm::mat4 modelMatrixMinionVolandoPhone = glm::mat4(modelMatrixMinionVolando);
