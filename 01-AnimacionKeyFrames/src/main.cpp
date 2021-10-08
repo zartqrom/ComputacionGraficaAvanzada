@@ -913,6 +913,7 @@ void applicationLoop() {
 
 		// Variables donde se guardan las matrices de cada articulacion por 1 frame
 		std::vector<float> matrixDartJoints;
+		std::vector<float> matrixBuzzJoints;
 		std::vector<glm::mat4> matrixDart;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -1339,6 +1340,44 @@ void applicationLoop() {
 			}
 			modelMatrixDart = interpolate(keyFramesDart, indexFrameDart, indexFrameDartNext, 0, interpolationDart);
 		}
+
+		if (record && modelSelected == 3)
+		{
+			matrixBuzzJoints.push_back(rotBuzzHead);
+			matrixBuzzJoints.push_back(rotBuzzLeftArm);
+			matrixBuzzJoints.push_back(rotBuzzLeftForearm);
+			matrixBuzzJoints.push_back(rotBuzzRightArm);
+			matrixBuzzJoints.push_back(rotBuzzLeftLeg);
+			matrixBuzzJoints.push_back(rotBuzzRightLeg);
+			if (saveFrame)
+			{
+				appendFrame(myfile, matrixBuzzJoints);
+				saveFrame = false;
+			}
+		}
+		else if (keyFramesBuzzJoints.size() > 0)
+		{
+			//Para reproducir los frames
+			interpolationBuzzJoints = numPasosBuzzJoints / (float) maxNumPasosBuzzJoints;
+			numPasosBuzzJoints++;
+			if (interpolationBuzzJoints > 1)
+			{
+				numPasosBuzzJoints = 0;
+				interpolationBuzzJoints = 0;
+				indexFrameBuzzJoints = indexFrameBuzzJointsNext;
+				indexFrameBuzzJointsNext++;
+			}
+			if (indexFrameBuzzJointsNext > keyFramesBuzzJoints.size() - 1)
+			{
+				indexFrameBuzzJointsNext = 0;
+			}
+			rotBuzzHead = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 0, interpolationBuzzJoints);
+			rotBuzzLeftArm = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 1, interpolationBuzzJoints);
+			rotBuzzLeftForearm = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 2, interpolationBuzzJoints);
+			rotBuzzRightArm = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 3, interpolationBuzzJoints);
+			rotBuzzLeftLeg = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 5, interpolationBuzzJoints);
+			rotBuzzRightLeg = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 6, interpolationBuzzJoints);
+		}
 		
 
 		// Constantes de animaciones
@@ -1504,7 +1543,7 @@ void applicationLoop() {
 			break;
 		}
 
-		std::cout << "Avance -> " << advanceCountLambo << std::endl;
+		//std::cout << "Avance -> " << advanceCountLambo << std::endl;
 
 		glfwSwapBuffers(window);
 	}
