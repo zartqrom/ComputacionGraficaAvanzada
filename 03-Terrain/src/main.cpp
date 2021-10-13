@@ -83,7 +83,7 @@ Model mayowModelAnimate;
 //Minion
 Model minionModelAnimate;
 // Terrain model instance
-Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
+Terrain terrain(-1, -1, 100, 20, "../Textures/DemoMapaAlturas.png");
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -793,7 +793,7 @@ void applicationLoop() {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textureCespedID);
 		shaderMulLighting.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(80, 80)));
-		terrain.setPosition(glm::vec3(100, 0, 100));
+		terrain.setPosition(glm::vec3(50, 0, 50));
 		terrain.render();
 		shaderMulLighting.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(0, 0)));
 		glBindTexture(GL_TEXTURE_2D, 0);
