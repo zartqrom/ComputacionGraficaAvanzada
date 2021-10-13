@@ -681,9 +681,9 @@ bool processInput(bool continueApplication) {
 	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{	
 		//Minion Walking
+		minionModelAnimate.setAnimationIndex(0);
 		modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(0.0f, 0.0f, 0.01f));
 		printf("Caminando\n");
-		minionModelAnimate.setAnimationIndex(0);
 	}
 	
 
@@ -892,8 +892,8 @@ void applicationLoop() {
 		//Minion Waiting
 		glm::mat4 modelMatrixMinionBody = glm::mat4(modelMatrixMinion);
 		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.009, 0.009, 0.009));
-		minionModelAnimate.setAnimationIndex(1);
 		minionModelAnimate.render(modelMatrixMinionBody);
+		minionModelAnimate.setAnimationIndex(1);
 
 		/*******************************************
 		 * Skybox
