@@ -80,6 +80,9 @@ Model modelDartLegoRightLeg;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+//Minion
+Model minionWalkingModelAnimate;
+Model minionWaitingModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -112,6 +115,8 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixMinionWalking = glm::mat4(1.0f);
+glm::mat4 modelMatrixMinionWaiting = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
@@ -273,6 +278,13 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
+
+	//Minion Walking
+	minionWalkingModelAnimate.loadModel("../models/Minion/minionWalking.fbx");
+	minionWalkingModelAnimate.setShader(&shaderMulLighting);
+	//Minion Waiting
+	minionWaitingModelAnimate.loadModel("../models/Minion/minionWaiting.fbx");
+	minionWaitingModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -507,6 +519,8 @@ void destroy() {
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
+	minionWaitingModelAnimate.destroy();
+	minionWalkingModelAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -690,6 +704,9 @@ void applicationLoop() {
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
+	modelMatrixMinionWalking = glm::translate(modelMatrixMinionWalking, glm::vec3(13.0f, 0.05f, 5.0f));
+modelMatrixMinionWaiting = glm::translate(modelMatrixMinionWaiting, glm::vec3(10.0f, 0.05f, -15.0f));
+
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
 	keyFramesDartJoints = getKeyRotFrames(fileName);
@@ -869,6 +886,17 @@ void applicationLoop() {
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 		mayowModelAnimate.setAnimationIndex(0);
 		mayowModelAnimate.render(modelMatrixMayowBody);
+
+		//Minion Walking
+		glm::mat4 modelMatrixMinionWalkingBody = glm::mat4(modelMatrixMinionWalking);
+		modelMatrixMinionWalkingBody = glm::scale(modelMatrixMinionWalkingBody, glm::vec3(0.009, 0.009, 0.009));
+		minionWalkingModelAnimate.setAnimationIndex(0);
+		minionWalkingModelAnimate.render(modelMatrixMinionWalkingBody);
+		//Minion Waiting
+		glm::mat4 modelMatrixMinionWaitingBody = glm::mat4(modelMatrixMinionWaiting);
+		modelMatrixMinionWaitingBody = glm::scale(modelMatrixMinionWaitingBody, glm::vec3(0.009, 0.009, 0.009));
+		minionWaitingModelAnimate.setAnimationIndex(0);
+		minionWaitingModelAnimate.render(modelMatrixMinionWaitingBody);
 
 		/*******************************************
 		 * Skybox
