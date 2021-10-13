@@ -678,14 +678,27 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
+	//Minion Walking
 	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{	
-		//Minion Walking
 		minionModelAnimate.setAnimationIndex(0);
 		modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(0.0f, 0.0f, 0.01f));
-		printf("Caminando\n");
 	}
-	
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(0.0f, 0.0f, -0.01f));
+	}
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::rotate(modelMatrixMinion, -0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::rotate(modelMatrixMinion, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
 
 	glfwPollEvents();
 	return continueApplication;
@@ -890,8 +903,9 @@ void applicationLoop() {
 		mayowModelAnimate.setAnimationIndex(1);
 
 		//Minion Waiting
+		modelMatrixMinion[3][1] = terrain.getHeightTerrain(modelMatrixMinion[3][0], modelMatrixMinion[3][2]);
 		glm::mat4 modelMatrixMinionBody = glm::mat4(modelMatrixMinion);
-		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.009, 0.009, 0.009));
+		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.004, 0.004, 0.004));
 		minionModelAnimate.render(modelMatrixMinionBody);
 		minionModelAnimate.setAnimationIndex(1);
 
