@@ -903,6 +903,12 @@ void applicationLoop() {
 		mayowModelAnimate.setAnimationIndex(1);
 
 		//Minion Waiting
+		glm::vec3 ejeY = glm::normalize(terrain.getNormalTerrain(modelMatrixMinion[3][0], modelMatrixMinion[3][2]));
+		glm::vec3 ejeX = glm::normalize(modelMatrixMinion[0]);
+		glm::vec3 ejeZ = glm::normalize(glm::cross(ejeX, ejeY));
+		modelMatrixMinion[0] = glm::vec4(ejeX, 0.0f);
+		modelMatrixMinion[1] = glm::vec4(ejeY, 0.0f);
+		modelMatrixMinion[2] = glm::vec4(ejeZ, 0.0f);
 		modelMatrixMinion[3][1] = terrain.getHeightTerrain(modelMatrixMinion[3][0], modelMatrixMinion[3][2]);
 		glm::mat4 modelMatrixMinionBody = glm::mat4(modelMatrixMinion);
 		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.004, 0.004, 0.004));
