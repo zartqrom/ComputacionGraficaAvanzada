@@ -84,6 +84,8 @@ Model modelDartLegoRightLeg;
 Model mayowModelAnimate;
 //Minion
 Model minionModelAnimate;
+//Iron Man
+Model ironManModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 100, 30, "../Textures/DemoMapaAlturas.png");
 
@@ -118,6 +120,7 @@ glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
+glm::mat4 modelMatrixIronMan = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
@@ -285,6 +288,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Minion
 	minionModelAnimate.loadModel("../models/Minion/minion.fbx");
 	minionModelAnimate.setShader(&shaderMulLighting);
+
+	//Iron Man
+	ironManModelAnimate.loadModel("../models/minionMixamo/minion.fbx");
+	ironManModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -681,6 +688,7 @@ void destroy() {
 	// Custom objects animate
 	mayowModelAnimate.destroy();
 	minionModelAnimate.destroy();
+	ironManModelAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -892,6 +900,8 @@ void applicationLoop() {
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
 	modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(13.0f, 0.05f, 5.0f));
+
+	modelMatrixIronMan = glm::translate(modelMatrixIronMan, glm::vec3(5.0f, 0.05f, -2.0f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1117,6 +1127,11 @@ void applicationLoop() {
 		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.004, 0.004, 0.004));
 		minionModelAnimate.render(modelMatrixMinionBody);
 		minionModelAnimate.setAnimationIndex(1);
+
+		//Iron Man
+		modelMatrixIronMan[3][1] = terrain.getHeightTerrain(modelMatrixIronMan[3][0], modelMatrixIronMan[3][2]);
+		//modelMatrixIronMan = glm::scale(modelMatrixIronMan, glm::vec3(0.004, 0.004, 0.004));
+		ironManModelAnimate.render(modelMatrixIronMan);
 
 		/*******************************************
 		 * Skybox
