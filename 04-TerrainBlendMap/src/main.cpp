@@ -82,6 +82,8 @@ Model modelDartLegoRightLeg;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+//Minion
+Model minionModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -115,6 +117,7 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
@@ -278,6 +281,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
+
+	//Minion
+	minionModelAnimate.loadModel("../models/Minion/minion.fbx");
+	minionModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -673,6 +680,7 @@ void destroy() {
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
+	minionModelAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -841,6 +849,28 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
+	//Minion Walking
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(0.0f, 0.0f, 0.01f));
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(0.0f, 0.0f, -0.01f));
+	}
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::rotate(modelMatrixMinion, -0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{	
+		minionModelAnimate.setAnimationIndex(0);
+		modelMatrixMinion = glm::rotate(modelMatrixMinion, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -860,6 +890,8 @@ void applicationLoop() {
 
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+
+	modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(13.0f, 0.05f, 5.0f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1072,6 +1104,19 @@ void applicationLoop() {
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 		mayowModelAnimate.setAnimationIndex(0);
 		mayowModelAnimate.render(modelMatrixMayowBody);
+
+		//Minion Waiting
+		glm::vec3 ejeY = glm::normalize(terrain.getNormalTerrain(modelMatrixMinion[3][0], modelMatrixMinion[3][2]));
+		glm::vec3 ejeX = glm::normalize(modelMatrixMinion[0]);
+		glm::vec3 ejeZ = glm::normalize(glm::cross(ejeX, ejeY));
+		modelMatrixMinion[0] = glm::vec4(ejeX, 0.0f);
+		modelMatrixMinion[1] = glm::vec4(ejeY, 0.0f);
+		modelMatrixMinion[2] = glm::vec4(ejeZ, 0.0f);
+		modelMatrixMinion[3][1] = terrain.getHeightTerrain(modelMatrixMinion[3][0], modelMatrixMinion[3][2]);
+		glm::mat4 modelMatrixMinionBody = glm::mat4(modelMatrixMinion);
+		modelMatrixMinionBody = glm::scale(modelMatrixMinionBody, glm::vec3(0.004, 0.004, 0.004));
+		minionModelAnimate.render(modelMatrixMinionBody);
+		minionModelAnimate.setAnimationIndex(1);
 
 		/*******************************************
 		 * Skybox
