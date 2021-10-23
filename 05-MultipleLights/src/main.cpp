@@ -153,7 +153,9 @@ float dorRotCount = 0.0;
 
 // Lamps positions
 std::vector<glm::vec3> lamp1Position = { glm::vec3(-7.03, 0, -19.14), glm::vec3(
-		24.41, 0, -34.57), glm::vec3(-10.15, 0, -54.10), glm::vec3(16.01, 0, -53.12) };
+		24.41, 0, -34.57), glm::vec3(-10.15, 0, -54.10), glm::vec3(
+		16.01, 0, -53.12), glm::vec3(36.71, 0, -21.87), glm::vec3(
+		78.12, 0, -37.89), glm::vec3(31.83, 0, 21.67) };
 std::vector<float> lamp1Orientation = { -17.0, -82.67, 23.70, -33.93};
 std::vector<glm::vec3> lamp2Position = { glm::vec3(-36.52, 0, -23.24),
 		glm::vec3(-52.73, 0, -3.90) };
