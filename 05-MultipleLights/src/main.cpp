@@ -872,6 +872,28 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
+	//Minion Walking
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{	
+		modelLambo.setAnimationIndex(0);
+		modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.1f));
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{	
+		modelLambo.setAnimationIndex(0);
+		modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, -0.1f));
+	}
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{	
+		modelLambo.setAnimationIndex(0);
+		modelMatrixLambo = glm::rotate(modelMatrixLambo, -0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{	
+		modelLambo.setAnimationIndex(0);
+		modelMatrixLambo = glm::rotate(modelMatrixLambo, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -1116,6 +1138,12 @@ void applicationLoop() {
 
 		// Lambo car
 		glDisable(GL_CULL_FACE);
+		glm::vec3 ejeY = glm::normalize(terrain.getNormalTerrain(modelMatrixLambo[3][0], modelMatrixLambo[3][2]));
+		glm::vec3 ejeX = glm::normalize(modelMatrixLambo[0]);
+		glm::vec3 ejeZ = glm::normalize(glm::cross(ejeX, ejeY));
+		modelMatrixLambo[0] = glm::vec4(ejeX, 0.0f);
+		modelMatrixLambo[1] = glm::vec4(ejeY, 0.0f);
+		modelMatrixLambo[2] = glm::vec4(ejeZ, 0.0f);
 		glm::mat4 modelMatrixLamboChasis = glm::mat4(modelMatrixLambo);
 		modelMatrixLamboChasis[3][1] = terrain.getHeightTerrain(modelMatrixLamboChasis[3][0], modelMatrixLamboChasis[3][2]);
 		modelMatrixLamboChasis = glm::scale(modelMatrixLamboChasis, glm::vec3(1.3, 1.3, 1.3));
