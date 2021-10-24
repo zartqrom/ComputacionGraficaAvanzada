@@ -83,6 +83,7 @@ Model modelDartLegoRightLeg;
 Model modelLamp1;
 Model modelLamp2;
 Model modelLampPost2;
+Model modelLamp3;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
@@ -160,6 +161,8 @@ std::vector<float> lamp1Orientation = { -17.0, -82.67, 23.70, -33.93};
 std::vector<glm::vec3> lamp2Position = { glm::vec3(-36.52, 0, -23.24),
 		glm::vec3(-52.73, 0, -3.90) };
 std::vector<float> lamp2Orientation = {21.37 + 90, -65.0 + 90};
+std::vector<glm::vec3> lamp3Position = { glm::vec3(19.92, 0, 38.86) };
+std::vector<float> lamp3Orientation = {21.37 + 90, -65.0 + 90};
 
 double deltaTime;
 double currTime, lastTime;
@@ -296,6 +299,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelLamp2.setShader(&shaderMulLighting);
 	modelLampPost2.loadModel("../models/Street_Light/LampPost.obj");
 	modelLampPost2.setShader(&shaderMulLighting);
+	modelLamp3.loadModel("../models/Street_Light2/streetLamp2.obj");
+	modelLamp3.setShader(&shaderMulLighting);
 
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
@@ -695,6 +700,7 @@ void destroy() {
 	modelLamp1.destroy();
 	modelLamp2.destroy();
 	modelLampPost2.destroy();
+	modelLamp3.destroy();
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
@@ -1030,6 +1036,30 @@ void applicationLoop() {
 			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
 		}
 
+		for (int i = 0; i < lamp1Position.size(); i++)
+		{
+			glm::mat4 matrixAdjustLamp = glm::mat4(1.0f);
+			matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp3Position[i]);
+			matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp3Orientation[i]), glm::vec3(0 ,1, 0));
+			matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(1.0f, 1.0f, 1.0f));
+			matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0.76445f, 4.994f, 0.0));
+			glm::vec3 lampPosition = matrixAdjustLamp[3];
+			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
+			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
+			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
+			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
+			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.01);
+			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
+			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
+			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
+			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
+			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
+		}
+
 		/*******************************************
 		 * Terrain Cesped
 		 *******************************************/
@@ -1123,6 +1153,14 @@ void applicationLoop() {
 			modelLamp1.setScale(glm::vec3(0.5, 0.5, 0.5));
 			modelLamp1.setOrientation(glm::vec3(0, lamp1Orientation[i], 0));
 			modelLamp1.render();
+		}
+
+		for (int i = 0; i < lamp3Position.size(); i++){
+			lamp3Position[i].y = terrain.getHeightTerrain(lamp3Position[i].x, lamp3Position[i].z);
+			modelLamp3.setPosition(lamp3Position[i]);
+			modelLamp3.setScale(glm::vec3(0.5, 0.5, 0.5));
+			modelLamp3.setOrientation(glm::vec3(0, lamp3Orientation[i], 0));
+			modelLamp3.render();
 		}
 
 		// Dart lego
