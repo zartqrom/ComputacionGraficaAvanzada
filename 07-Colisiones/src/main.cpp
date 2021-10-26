@@ -1297,6 +1297,15 @@ void applicationLoop() {
 		aircraftCollider.e = modelAircraft.getObb().e * glm::vec3(1.0, 1.0, 1.0);
 		addOrUpdateColliders(collidersOBB, "aircraft", aircraftCollider, modelMatrixAircraft);
 
+		//Collider roca
+		AbstractModel::SBB rockCollider;
+		glm::mat4 modelMatrixColliderRock = glm::mat4(matrixModelRock);
+		modelMatrixColliderRock = glm::scale(modelMatrixColliderRock, glm::vec3(1.0f, 1.0f, 1.0f));
+		modelMatrixColliderRock = glm::translate(modelMatrixColliderRock, modelRock.getSbb().c);
+		rockCollider.c = modelMatrixColliderRock[3];
+		rockCollider.ratio = modelRock.getSbb().ratio*1.0f;
+		addOrUpdateColliders(collidersSBB, "rock", rockCollider, matrixModelRock);
+
 		// Lamps1 colliders
 		for (int i = 0; i < lamp1Position.size(); i++){
 			AbstractModel::OBB lampCollider;
