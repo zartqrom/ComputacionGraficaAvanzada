@@ -124,7 +124,6 @@ glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
 bool enableCountSelected = true;
-float rotLambo = 0.7071068f;
 
 // Variables to animations keyframes
 bool saveFrame = false, availableSave = true;
@@ -878,25 +877,31 @@ bool processInput(bool continueApplication) {
 	{	
 		modelLambo.setAnimationIndex(0);
 		modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.1f));
+		if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{	
+			modelLambo.setAnimationIndex(0);
+			modelMatrixLambo = glm::rotate(modelMatrixLambo, -0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		{	
+			modelLambo.setAnimationIndex(0);
+			modelMatrixLambo = glm::rotate(modelMatrixLambo, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
 	}
 	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{	
 		modelLambo.setAnimationIndex(0);
 		modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, -0.1f));
-	}
-	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{	
-		modelLambo.setAnimationIndex(0);
-		modelMatrixLambo = glm::rotate(modelMatrixLambo, -0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-		rotLambo -= .001f;
-		std::cout << "Rotacion Spotlight Z:" << rotLambo << std::endl;
-	}
-	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{	
-		modelLambo.setAnimationIndex(0);
-		modelMatrixLambo = glm::rotate(modelMatrixLambo, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-		rotLambo += .001f;
-		std::cout << "Rotacion Spotlight Z:" << rotLambo << std::endl;
+		if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{	
+			modelLambo.setAnimationIndex(0);
+			modelMatrixLambo = glm::rotate(modelMatrixLambo, -0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		{	
+			modelLambo.setAnimationIndex(0);
+			modelMatrixLambo = glm::rotate(modelMatrixLambo, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
 	}
 
 	glfwPollEvents();
