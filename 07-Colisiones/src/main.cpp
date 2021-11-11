@@ -798,6 +798,65 @@ bool processInput(bool continueApplication) {
 		return false;
 	}
 
+	//Conexion del control
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_TRUE)
+	{
+		std::cout << "Esta presente el JoyStick" << std::endl;
+		int axesCount, buttonCount;
+		const float * axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
+		std::cout << "Numero de ejes disponibles => " << axesCount << std::endl;
+		//Mapeo Xbox
+		// std::cout << "Left stick X axis" << axes[0] << std::endl;
+		// std::cout << "Left stick Y axis" << axes[1] << std::endl;
+		// std::cout << "Left Trigger L2" << axes[4] << std::endl;
+		// std::cout << "Right stick X axis" << axes[2] << std::endl;
+		// std::cout << "Right stick Y axis" << axes[3] << std::endl;
+		// std::cout << "Right Trigger R2" << axes[5] << std::endl;
+		//Movimiento en Y
+		if (fabs(axes[1] > 0.2))
+		{
+			modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, axes[1] * 0.1));
+			animationIndex = 0;
+		}
+		//Movimiento en X
+		if (fabs(axes[0] > 0.2))
+		{
+			modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-axes[0] * 0.5f), glm::vec3(0, 1, 0));
+			animationIndex = 0;
+		}
+		//Rotacion
+		if(fabs(axes[2]) > 0.2)
+		{
+			camera -> mouseMoveCamera(axes[2], 0.0, deltaTime);
+		}
+		//Rotacion
+		if(fabs(axes[3]) > 0.2)
+		{
+			camera -> mouseMoveCamera(0.0, axes[3], deltaTime);
+		}
+
+		const unsigned char * buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+		//Mapeo Xbox
+		//Boton A -> buttons[0]
+		//Boton B -> buttons[1]
+		//Boton X -> buttons[2]
+		//Boton Y -> buttons[3]
+		// std::cout << "Numero de botones disponibles =>" << buttonCount << std::endl;
+		// if (buttons[2] == GLFW_PRESS)
+		// {
+		// 	std::cout << "Se presiona X" << std::endl;
+		// }
+		if (!isJump && buttons[0] == GLFW_PRESS)
+		{
+			isJump = true;
+			startTimeJump = currTime;
+			tmv = 0;
+		}
+		
+
+	}
+	
+
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		camera->mouseMoveCamera(offsetX, 0.0, deltaTime);
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
