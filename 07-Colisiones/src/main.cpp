@@ -1375,6 +1375,17 @@ void applicationLoop() {
 		aircraftCollider.e = modelAircraft.getObb().e * glm::vec3(1.0, 1.0, 1.0);
 		addOrUpdateColliders(collidersOBB, "aircraft", aircraftCollider, modelMatrixAircraft);
 
+		//Collider Lambo
+		glm::mat4 modelMatrixColliderLambo = glm::mat4(modelMatrixLambo);
+		modelMatrixColliderLambo[3][1] = terrain.getHeightTerrain(modelMatrixColliderLambo[3][0], modelMatrixColliderLambo[3][2]);
+		AbstractModel::OBB lamboCollider;
+		lamboCollider.u = glm::quat_cast(modelMatrixColliderLambo);
+		modelMatrixColliderLambo = glm::scale(modelMatrixColliderLambo, glm::vec3(1.3f, 1.3f, 1.3f));
+		modelMatrixColliderLambo = glm::translate(modelMatrixColliderLambo, modelLambo.getObb().c);
+		lamboCollider.c = modelMatrixColliderLambo[3];
+		lamboCollider.e = modelLambo.getObb().e * glm::vec3(1.3f, 1.3f, 1.3f);
+		addOrUpdateColliders(collidersOBB, "lambo", lamboCollider, modelMatrixLambo);
+
 		//Collider roca
 		AbstractModel::SBB rockCollider;
 		glm::mat4 modelMatrixColliderRock = glm::mat4(matrixModelRock);
