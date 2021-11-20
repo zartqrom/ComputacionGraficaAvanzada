@@ -1518,6 +1518,30 @@ void applicationLoop() {
 			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
 		}
 
+		/**************************************
+		 * Test collisions OBB vs SBB
+		 **************************************/
+		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++)
+		{
+			bool isCollision = false;
+			for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > ::iterator jt = collidersSBB.begin(); jt != collidersSBB.end(); jt++)
+			{
+				//testSphereOBox(sbb, obb)
+				if (testSphereOBox(std::get<0>(jt->second), std::get<0>(it->second)))
+				{
+					std::cout << "Collision " << it->first << " with " << jt->first << std::endl;
+					isCollision = true;
+					addOrUpdateCollisionDetection(collisionDetection, jt->first, true);
+				}
+			}
+			if (isCollision)
+			{
+				std::cout << "Collision " << it->first << " with object" <<  std::endl;
+			}
+			
+			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
+		}
+
 		/*******************************************
 		 * Interpolation key frames with disconect objects
 		 *******************************************/
