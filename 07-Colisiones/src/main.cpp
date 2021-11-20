@@ -1485,17 +1485,21 @@ void applicationLoop() {
 		boxCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));*/
 
 		/**************************************
-		 * Ray test collisions
+		 * Test collisions OBB vs OBB
 		 **************************************/
-		//for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > ::iterator it = collidersSBB.begin(); it != collidersSBB.end(); it++)
-		//{
-		//	float tray;
-		//	if (raySphereIntersect(ori, tar, rayDirection, std::get<0>(it->second), tray))
-		//	{
-		//		std::cout << "Collision" << it << first <<" with "<< "Ray" << std::endl;
-		//	}
-		//	
-		//}
+		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++)
+		{
+			bool isCollision = false;
+			for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator jt = collidersOBB.begin(); jt != collidersOBB.end(); jt++)
+			{
+				if (it != jt && testOBBOBB(std::get<0>(it->second), std::get<0>(jt->second)))
+				{
+					std::cout << "Collision " << it->first << " with " << jt->first << std::endl;
+					isCollision = true;
+				}
+			}
+			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
+		}
 		
 
 		/*******************************************
