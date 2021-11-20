@@ -127,6 +127,8 @@ glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 
+glm::vec3 escalamientoMayow = glm::vec3(0.021f, 0.021f, 0.021f);
+
 int animationIndex = 1;
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 2;
@@ -1324,7 +1326,7 @@ void applicationLoop() {
 		}
 		
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
-		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
+		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, escalamientoMayow);
 		mayowModelAnimate.setAnimationIndex(animationIndex);
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
@@ -1385,6 +1387,17 @@ void applicationLoop() {
 		lamboCollider.c = modelMatrixColliderLambo[3];
 		lamboCollider.e = modelLambo.getObb().e * glm::vec3(1.3f, 1.3f, 1.3f);
 		addOrUpdateColliders(collidersOBB, "lambo", lamboCollider, modelMatrixLambo);
+
+		//Collider Mayow
+		AbstractModel::OBB mayowCollider;
+		glm::mat4 modelMatrixColliderMayow = glm::mat4(modelMatrixMayow);
+		modelMatrixColliderMayow = glm::rotate(modelMatrixColliderMayow, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+		mayowCollider.u = glm::quat_cast(modelMatrixColliderMayow);
+		modelMatrixColliderMayow = glm::scale(modelMatrixColliderMayow, escalamientoMayow);
+		modelMatrixColliderMayow = glm:: translate(modelMatrixColliderMayow, mayowModelAnimate.getObb().c);
+		mayowCollider.e = mayowModelAnimate.getObb().e * escalamientoMayow * glm::vec3(0.5, 0.5, 0.7);
+		mayowCollider.c = modelMatrixColliderMayow[3];
+		addOrUpdateColliders(collidersOBB, "mayow", mayowCollider, modelMatrixMayow);
 
 		//Collider roca
 		AbstractModel::SBB rockCollider;
@@ -1470,6 +1483,20 @@ void applicationLoop() {
 		// Se regresa el color blanco
 		sphereCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));
 		boxCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));*/
+
+		/**************************************
+		 * Ray test collisions
+		 **************************************/
+		//for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > ::iterator it = collidersSBB.begin(); it != collidersSBB.end(); it++)
+		//{
+		//	float tray;
+		//	if (raySphereIntersect(ori, tar, rayDirection, std::get<0>(it->second), tray))
+		//	{
+		//		std::cout << "Collision" << it << first <<" with "<< "Ray" << std::endl;
+		//	}
+		//	
+		//}
+		
 
 		/*******************************************
 		 * Interpolation key frames with disconect objects
