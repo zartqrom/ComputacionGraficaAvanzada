@@ -1542,6 +1542,38 @@ void applicationLoop() {
 			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
 		}
 
+		//Paro de avance por colision
+		std::map<std::string, bool>::iterator colIt;
+		for (colIt = collisionDetection.begin(); colIt != collisionDetection.end(); colIt++)
+		{
+			std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> >::iterator it =collidersSBB.find(colIt->first);
+			std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> >::iterator jt =collidersOBB.find(colIt->first);
+			if (it != collidersSBB.end())
+			{
+				if (!colIt->second)
+				{
+					addOrUpdateColliders(collidersSBB, it->first);
+				}
+			}
+			if (jt != collidersOBB.end())
+			{
+				if (!colIt->second)
+				{
+					addOrUpdateColliders(collidersOBB, jt->first);
+				}
+				else
+				{
+					if (jt->first.compare("mayow") == 0)
+					{
+						modelMatrixMayow = std::get<1>(jt->second);
+					}
+					
+				}
+			}
+			
+		}
+		
+
 		/*******************************************
 		 * Interpolation key frames with disconect objects
 		 *******************************************/
