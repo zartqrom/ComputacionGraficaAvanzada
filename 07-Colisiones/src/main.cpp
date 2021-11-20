@@ -1490,7 +1490,7 @@ void applicationLoop() {
 		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++)
 		{
 			bool isCollision = false;
-			for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator jt = collidersOBB.begin(); jt != collidersOBB.end(); jt++)
+			for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator jt = collidersOBB.begin(); jt != collidersOBB.end() && !isCollision; jt++)
 			{
 				if (it != jt && testOBBOBB(std::get<0>(it->second), std::get<0>(jt->second)))
 				{
@@ -1501,6 +1501,22 @@ void applicationLoop() {
 			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
 		}
 		
+		/**************************************
+		 * Test collisions SBB vs SBB (esfera vs esfera)
+		 **************************************/
+		for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > ::iterator it = collidersSBB.begin(); it != collidersSBB.end(); it++)
+		{
+			bool isCollision = false;
+			for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > ::iterator jt = collidersSBB.begin(); jt != collidersSBB.end() && !isCollision; jt++)
+			{
+				if (it != jt && testSphereSphereIntersection(std::get<0>(it->second), std::get<0>(jt->second)))
+				{
+					std::cout << "Collision " << it->first << " with " << jt->first << std::endl;
+					isCollision = true;
+				}
+			}
+			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
+		}
 
 		/*******************************************
 		 * Interpolation key frames with disconect objects
