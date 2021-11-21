@@ -1504,7 +1504,7 @@ void applicationLoop() {
 		boxCollider.setColor(glm::vec4(1.0, 1.0, 1.0, 1.0));*/
 
 		/**************************************
-		 * Test collisions OBB vs OBB
+		 * Test collisions OBB vs OBB (caja vs caja)
 		 **************************************/
 		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++)
 		{
@@ -1538,7 +1538,7 @@ void applicationLoop() {
 		}
 
 		/**************************************
-		 * Test collisions OBB vs SBB
+		 * Test collisions OBB vs SBB (caja vs esfera)
 		 **************************************/
 		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > ::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++)
 		{
@@ -1590,6 +1590,29 @@ void applicationLoop() {
 			}
 		}
 		
+		/*******************************************
+		 * Ray Test collision rayo vs esfera
+		 *******************************************/
+		for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4,glm::mat4> >::iterator it = collidersSBB.begin(); it != collidersSBB.end(); it++)
+		{
+			float tray;
+			if (raySphereIntersect(ori, tar, rayDirection, std::get<0>(it->second), tray));
+			{
+				std::cout << "Collision " << it->first << " with " << tray << std::endl;
+			}
+			
+		}
+		/*******************************************
+		 * Ray Test collision rayo vs caja
+		 *******************************************/
+		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4,glm::mat4> >::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++)
+		{
+			if (intersectRayOBB(ori, tar, rayDirection, std::get<0>(it->second)));
+			{
+				std::cout << "Collision " << it->first << " with Ray" << std::endl;
+			}
+			
+		}		
 
 		/*******************************************
 		 * Interpolation key frames with disconect objects
