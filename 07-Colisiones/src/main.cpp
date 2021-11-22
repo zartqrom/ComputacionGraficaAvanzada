@@ -77,6 +77,7 @@ Model modelLamboFrontLeftWheel;
 Model modelLamboFrontRightWheel;
 Model modelLamboRearLeftWheel;
 Model modelLamboRearRightWheel;
+Model modelPlant;
 // Dart lego
 Model modelDartLegoBody;
 Model modelDartLegoHead;
@@ -132,6 +133,7 @@ glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
 glm::mat4 modelMatrixMinionVolando = glm::mat4(1.0f);
+glm::mat4 matrixModelPlant = glm::mat4(1.0);
 
 glm::vec3 escalamientoMayow = glm::vec3(0.021f, 0.021f, 0.021f);
 glm::vec3 escalamientoMinion = glm::vec3(0.004, 0.004, 0.004);
@@ -280,6 +282,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	modelRock.loadModel("../models/rock/rock.obj");
 	modelRock.setShader(&shaderMulLighting);
+	
+	modelPlant.loadModel("../models/boxwood_plant/plant.obj");
+	modelPlant.setShader(&shaderMulLighting);
 
 	modelAircraft.loadModel("../models/Aircraft_obj/E 45 Aircraft_obj.obj");
 	modelAircraft.setShader(&shaderMulLighting);
@@ -748,6 +753,7 @@ void destroy() {
 	modelLamp2.destroy();
 	modelLampPost2.destroy();
 	modelMinionVolando.destroy();
+	modelPlant.destroy();
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
@@ -1047,6 +1053,8 @@ void applicationLoop() {
 	modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(13.0f, 0.05f, 5.0f));
 	modelMatrixMinionVolando = glm::translate(modelMatrixMinionVolando, glm::vec3(13.0f, 0.5f, 3.0f));
 
+	matrixModelPlant = glm::translate(matrixModelPlant, glm::vec3(6.0, -0.3, 2.0));
+
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
 	keyFramesDartJoints = getKeyRotFrames(fileName);
@@ -1255,6 +1263,12 @@ void applicationLoop() {
 		//Rock render
 		matrixModelRock[3][1] = terrain.getHeightTerrain(matrixModelRock[3][0], matrixModelRock[3][2]);
 		modelRock.render(matrixModelRock);
+		// Forze to enable the unit texture to 0 always ----------------- IMPORTANT
+		glActiveTexture(GL_TEXTURE0);
+
+		//Plant render
+		matrixModelPlant[3][1] = terrain.getHeightTerrain(matrixModelPlant[3][0], matrixModelPlant[3][2]);
+		modelPlant.render(matrixModelPlant);
 		// Forze to enable the unit texture to 0 always ----------------- IMPORTANT
 		glActiveTexture(GL_TEXTURE0);
 
@@ -1494,14 +1508,14 @@ void applicationLoop() {
 		minionCollider.c = modelMatrixColliderMinion[3];
 		addOrUpdateColliders(collidersOBB, "minion", minionCollider, modelMatrixMinion);
 
-		//Collider Minion
+		//Collider Columna
 		AbstractModel::OBB minionVolandoCollider;
 		glm::mat4 modelMatrixColliderMinionVolando = glm::mat4(modelMatrixMinionVolando);
 		modelMatrixColliderMinionVolando = glm::rotate(modelMatrixColliderMinionVolando, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
 		minionVolandoCollider.u = glm::quat_cast(modelMatrixColliderMinionVolando);
 		modelMatrixColliderMinionVolando = glm::scale(modelMatrixColliderMinionVolando, escalamientoMinion);
 		modelMatrixColliderMinionVolando = glm:: translate(modelMatrixColliderMinionVolando, modelMinionVolando.getObb().c);
-		minionVolandoCollider.e = modelMinionVolando.getObb().e * escalamientoMinionVolando * glm::vec3(1.2, 1.2, 2.4);
+		minionVolandoCollider.e = modelMinionVolando.getObb().e * escalamientoMinionVolando * glm::vec3(1.2, 1.2, 3.6);
 		minionVolandoCollider.c = modelMatrixColliderMinionVolando[3];
 		addOrUpdateColliders(collidersOBB, "minionVolando", minionVolandoCollider, modelMatrixMinionVolando);
 
@@ -1513,6 +1527,15 @@ void applicationLoop() {
 		rockCollider.c = modelMatrixColliderRock[3];
 		rockCollider.ratio = modelRock.getSbb().ratio*1.0f;
 		addOrUpdateColliders(collidersSBB, "rock", rockCollider, matrixModelRock);
+
+		//Collider plant
+		AbstractModel::SBB plantCollider;
+		glm::mat4 modelMatrixColliderPlant = glm::mat4(matrixModelPlant);
+		modelMatrixColliderPlant = glm::scale(modelMatrixColliderPlant, glm::vec3(1.0f, 1.0f, 1.0f));
+		modelMatrixColliderPlant = glm::translate(modelMatrixColliderPlant, modelPlant.getSbb().c);
+		plantCollider.c = modelMatrixColliderPlant[3];
+		plantCollider.ratio = modelPlant.getSbb().ratio*1.0f;
+		addOrUpdateColliders(collidersSBB, "plant", plantCollider, matrixModelPlant);
 
 		// Lamps1 colliders
 		for (int i = 0; i < lamp1Position.size(); i++){
