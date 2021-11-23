@@ -77,6 +77,7 @@ Model modelLamboFrontLeftWheel;
 Model modelLamboFrontRightWheel;
 Model modelLamboRearLeftWheel;
 Model modelLamboRearRightWheel;
+Model modelColumna;
 Model modelPlant;
 // Dart lego
 Model modelDartLegoBody;
@@ -97,7 +98,6 @@ Model modelLampPost2;
 Model mayowModelAnimate;
 //Minion
 Model minionModelAnimate;
-Model modelMinionVolando;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -132,12 +132,11 @@ glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 glm::mat4 modelMatrixMinion = glm::mat4(1.0f);
-glm::mat4 modelMatrixMinionVolando = glm::mat4(1.0f);
+glm::mat4 modelMatrixColumna = glm::mat4(1.0);
 glm::mat4 matrixModelPlant = glm::mat4(1.0);
 
 glm::vec3 escalamientoMayow = glm::vec3(0.021f, 0.021f, 0.021f);
 glm::vec3 escalamientoMinion = glm::vec3(0.004, 0.004, 0.004);
-glm::vec3 escalamientoMinionVolando = glm::vec3(0.05f, 0.05f, 0.05f);
 
 int animationIndex = 1;
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
@@ -289,6 +288,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelAircraft.loadModel("../models/Aircraft_obj/E 45 Aircraft_obj.obj");
 	modelAircraft.setShader(&shaderMulLighting);
 
+	modelColumna.loadModel("../models/columna/columna.obj");
+	modelColumna.setShader(&shaderMulLighting);
+
 	terrain.init();
 	terrain.setShader(&shaderTerrain);
 	terrain.setPosition(glm::vec3(100, 0, 100));
@@ -349,10 +351,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Minion
 	minionModelAnimate.loadModel("../models/Minion/minion.fbx");
 	minionModelAnimate.setShader(&shaderMulLighting);
-
-	//MinionVolando
-	modelMinionVolando.loadModel("../models/columna/columna.obj");
-	modelMinionVolando.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
 	camera->setDistanceFromTarget(distanceFromTarget);
@@ -752,7 +750,7 @@ void destroy() {
 	modelLamp1.destroy();
 	modelLamp2.destroy();
 	modelLampPost2.destroy();
-	modelMinionVolando.destroy();
+	modelColumna.destroy();
 	modelPlant.destroy();
 
 	// Custom objects animate
@@ -1051,7 +1049,8 @@ void applicationLoop() {
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
 	modelMatrixMinion = glm::translate(modelMatrixMinion, glm::vec3(13.0f, 0.05f, 5.0f));
-	modelMatrixMinionVolando = glm::translate(modelMatrixMinionVolando, glm::vec3(13.0f, 0.5f, 3.0f));
+
+	modelMatrixColumna = glm::translate(modelMatrixColumna, glm::vec3(13.0f, 0.5f, 0.0f));
 
 	matrixModelPlant = glm::translate(matrixModelPlant, glm::vec3(6.0, -0.3, 2.0));
 
@@ -1276,6 +1275,10 @@ void applicationLoop() {
 		modelMatrixAircraft[3][1] = terrain.getHeightTerrain(modelMatrixAircraft[3][0], modelMatrixAircraft[3][2]) + 2.0;
 		modelAircraft.render(modelMatrixAircraft);
 
+		// Columna render
+		modelMatrixColumna[3][1] = terrain.getHeightTerrain(modelMatrixColumna[3][0], modelMatrixColumna[3][2]);
+		modelColumna.render(modelMatrixColumna);
+
 		// Helicopter
 		glm::mat4 modelMatrixHeliChasis = glm::mat4(modelMatrixHeli);
 		modelHeliChasis.render(modelMatrixHeliChasis);
@@ -1409,11 +1412,6 @@ void applicationLoop() {
 		minionModelAnimate.render(modelMatrixMinionBody);
 		minionModelAnimate.setAnimationIndex(1);
 
-		//MinionVolando
-		glm::mat4 modelMatrixMinionVolandoBody = glm::mat4(modelMatrixMinionVolando);
-		modelMatrixMinionVolandoBody = glm::scale(modelMatrixMinionVolandoBody, escalamientoMinionVolando);
-		modelMinionVolando.render(modelMatrixMinionVolandoBody);
-
 		/*******************************************
 		 * Ray in Mayow view direction
 		 *******************************************/
@@ -1475,6 +1473,19 @@ void applicationLoop() {
 		aircraftCollider.e = modelAircraft.getObb().e * glm::vec3(1.0, 1.0, 1.0);
 		addOrUpdateColliders(collidersOBB, "aircraft", aircraftCollider, modelMatrixAircraft);
 
+		// Collider de la columna
+		glm::mat4 modelMatrixColliderColumna = glm::mat4(modelMatrixColumna);
+		AbstractModel::OBB columnaCollider;
+		// Set the orientation of collider before doing the scale
+		columnaCollider.u = glm::quat_cast(modelMatrixColumna);
+		modelMatrixColliderColumna = glm::scale(modelMatrixColliderColumna,
+				glm::vec3(1.0, 1.0, 1.0));
+		modelMatrixColliderColumna = glm::translate(
+				modelMatrixColliderColumna, modelColumna.getObb().c);
+		columnaCollider.c = glm::vec3(modelMatrixColliderColumna[3]);
+		columnaCollider.e = modelColumna.getObb().e * glm::vec3(1.0, 1.0, 1.0);
+		addOrUpdateColliders(collidersOBB, "columna", columnaCollider, modelMatrixColumna);
+
 		//Collider Lambo
 		glm::mat4 modelMatrixColliderLambo = glm::mat4(modelMatrixLambo);
 		modelMatrixColliderLambo[3][1] = terrain.getHeightTerrain(modelMatrixColliderLambo[3][0], modelMatrixColliderLambo[3][2]);
@@ -1507,17 +1518,6 @@ void applicationLoop() {
 		minionCollider.e = minionModelAnimate.getObb().e * glm::vec3(0.2, 0.2, 1.4);
 		minionCollider.c = modelMatrixColliderMinion[3];
 		addOrUpdateColliders(collidersOBB, "minion", minionCollider, modelMatrixMinion);
-
-		//Collider Columna
-		AbstractModel::OBB minionVolandoCollider;
-		glm::mat4 modelMatrixColliderMinionVolando = glm::mat4(modelMatrixMinionVolando);
-		modelMatrixColliderMinionVolando = glm::rotate(modelMatrixColliderMinionVolando, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
-		minionVolandoCollider.u = glm::quat_cast(modelMatrixColliderMinionVolando);
-		modelMatrixColliderMinionVolando = glm::scale(modelMatrixColliderMinionVolando, escalamientoMinion);
-		modelMatrixColliderMinionVolando = glm:: translate(modelMatrixColliderMinionVolando, modelMinionVolando.getObb().c);
-		minionVolandoCollider.e = modelMinionVolando.getObb().e * escalamientoMinionVolando * glm::vec3(1.2, 1.2, 3.6);
-		minionVolandoCollider.c = modelMatrixColliderMinionVolando[3];
-		addOrUpdateColliders(collidersOBB, "minionVolando", minionVolandoCollider, modelMatrixMinionVolando);
 
 		//Collider roca
 		AbstractModel::SBB rockCollider;
